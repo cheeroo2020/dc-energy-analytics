@@ -27,6 +27,10 @@ All outputs are CSVs designed to be loaded straight into Power BI.
 - Run `python -m src.check_placeholders` at any time to see what is still
   unfilled. It also writes `outputs/placeholder_register.csv`, so the
   provenance of every number is visible in the Power BI report itself.
+- **The code refuses to publish a total built on placeholders.** A bill that is
+  partly zeros still adds up to a plausible-looking number, which is the most
+  dangerous thing this project could produce. Pass `--rates illustrative` for
+  clearly-fake numbers, or `--allow-placeholders` to override for testing.
 - The author has no professional experience in the energy industry. This is a
   study exercise built to learn the domain.
 
@@ -37,7 +41,7 @@ All outputs are CSVs designed to be loaded straight into Power BI.
 | # | Piece | Module | Status |
 |---|-------|--------|--------|
 | 1 | Simulated half-hourly load + NEM12 read/write | `src/simulate_load.py`, `src/nem12.py` | ✅ built |
-| 2 | Network + retail tariff engine | `src/tariff.py` | ⬜ |
+| 2 | Network + retail tariff engine | `src/tariff.py`, `src/rates.py` | ✅ built |
 | 3 | Monthly bill calculation | `src/billing.py` | ⬜ |
 | 4 | Invoice checker with planted errors | `src/invoice_check.py` | ⬜ |
 | 5 | Consumption forecast from the build schedule | `src/forecast.py` | ⬜ |
@@ -53,9 +57,24 @@ cd ~/Projects/dc-energy-analytics
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
-python -m src.check_placeholders     # what still needs a real value
-python -m src.simulate_load          # generate load + NEM12, verify round trip
+python -m src.check_placeholders                  # what still needs a real value
+python -m src.simulate_load                       # generate load + NEM12, verify round trip
+python -m src.tariff --rates illustrative         # price one month
 ```
+
+## Real rates vs illustrative rates
+
+`config/*.yml` holds the real tariff structure with every published rate at
+`0.0` / `PLACEHOLDER`. `config/illustrative/rates.yml` is a **numbers-only
+overlay** of invented, deliberately round values, applied on top when you pass
+`--rates illustrative`. Everything it touches is stamped
+`ILLUSTRATIVE_NOT_REAL`, which appears on every bill line it prices.
+
+There is only one copy of each tariff structure, so the real and illustrative
+versions cannot drift apart. The overlay addresses charges by code
+(`charges.NUOS_DEMAND.rate`), using the exact same paths that
+`check_placeholders` prints — so the checker's output is a copy-pasteable list
+of what to fill in.
 
 ---
 

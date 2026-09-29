@@ -1,0 +1,101 @@
+# ---------------------------------------------------------------------------
+# RETAIL CONTRACT - INVENTED
+#
+# This is a made-up commercial contract for a made-up site. There is no real
+# retailer and no real deal. Inventing these terms is the point: a retail
+# contract is commercial, not published, so there is no official document to
+# download for the energy rate or the service fee.
+#
+# status meanings used in this file:
+#   CONTRACT_TERM      invented contract term. Fine to make up.
+#   MARKET_ASSUMPTION  a traded price with no single official source. Label it,
+#                      never present it as official.
+#   PLACEHOLDER        a genuinely published number. Go and get it.
+# ---------------------------------------------------------------------------
+
+contract:
+  retailer: "Simulated Retail Co"
+  contract_id: "SIM-CONTRACT-001"
+  structure: "Fixed price, environmental and market charges passed through"
+  term: "2024-01-01 to 2025-12-31"
+
+charges:
+  - code: "RETAIL_ENERGY"
+    description: "Retail energy - fixed price, all hours"
+    category: "retail"
+    basis: "energy"
+    rate_unit: "c/kWh"
+    rate:
+      value: 8.0
+      status: CONTRACT_TERM
+      source: "Invented contract term. A real deal would be struck against forward wholesale prices plus a retail margin."
+
+  - code: "RETAIL_SERVICE"
+    description: "Retail service fee"
+    category: "retail"
+    basis: "fixed_monthly"
+    rate_unit: "$/month"
+    rate:
+      value: 500.0
+      status: CONTRACT_TERM
+      source: "Invented contract term."
+
+  # -------------------------------------------------------------------------
+  # Environmental charges. The retailer is the liable entity and passes the
+  # cost through. Quantity = liable volume x the regulator's percentage.
+  # The percentages are published and reset on the CALENDAR year.
+  # -------------------------------------------------------------------------
+  - code: "LRET"
+    description: "Large-scale Renewable Energy Target (LGC surrender)"
+    category: "environmental"
+    basis: "certificate"
+    certificate_unit: "LGC"
+    rate_unit: "$/LGC"
+    percentage:
+      value: 0.0
+      status: PLACEHOLDER
+      source: "Clean Energy Regulator - Renewable Power Percentage (RPP) for the calendar year."
+    price:
+      value: 0.0
+      status: MARKET_ASSUMPTION
+      source: "No official LGC price exists. Spot/forward prices come from brokers and exchanges. Whatever you use is an assumption, not a published rate."
+    rate: null   # the price block above is the rate for a certificate charge
+
+  - code: "SRES"
+    description: "Small-scale Renewable Energy Scheme (STC surrender)"
+    category: "environmental"
+    basis: "certificate"
+    certificate_unit: "STC"
+    rate_unit: "$/STC"
+    percentage:
+      value: 0.0
+      status: PLACEHOLDER
+      source: "Clean Energy Regulator - Small-scale Technology Percentage (STP) for the calendar year."
+    price:
+      value: 0.0
+      status: PLACEHOLDER
+      source: "Clean Energy Regulator - STC clearing house price, and the rules on when it applies."
+    rate: null
+
+  # -------------------------------------------------------------------------
+  # Regulated pass-throughs, charged on settled volume (after loss factors).
+  # -------------------------------------------------------------------------
+  - code: "AEMO_FEES"
+    description: "AEMO market and ancillary service fees"
+    category: "market"
+    basis: "volume"
+    rate_unit: "$/MWh"
+    rate:
+      value: 0.0
+      status: PLACEHOLDER
+      source: "AEMO Budget and Fees / Fees and Charges schedule for the financial year, plus ancillary service recovery rates."
+
+  - code: "STATE_SCHEME"
+    description: "State energy efficiency scheme certificate cost"
+    category: "environmental"
+    basis: "volume"
+    rate_unit: "$/MWh"
+    rate:
+      value: 0.0
+      status: PLACEHOLDER
+      source: "State scheme administrator, e.g. NSW Energy Security Safeguard (ESS) or Victorian Energy Upgrades (VEU)."

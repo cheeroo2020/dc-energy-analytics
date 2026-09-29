@@ -10,25 +10,7 @@ report can show the provenance of every number it displays.
 
 import pandas as pd
 
-from src.config import ROOT, load_config
-
-
-def walk(node, path=""):
-    """Find every {value, status, source} block in a nested config.
-
-    Yields (dotted_path, block). Recurses through dictionaries and lists until
-    it hits a block that has both "value" and "status", which it treats as a
-    leaf and does not descend into.
-    """
-    if isinstance(node, dict):
-        if "value" in node and "status" in node:
-            yield path, node
-            return
-        for key, child in node.items():
-            yield from walk(child, f"{path}.{key}" if path else key)
-    elif isinstance(node, list):
-        for i, child in enumerate(node):
-            yield from walk(child, f"{path}[{i}]")
+from src.config import ROOT, load_config, walk
 
 
 def collect():

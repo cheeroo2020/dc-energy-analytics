@@ -1,4 +1,26 @@
 file,setting,value,status,source
+factors.yml,loss_factors.distribution_loss_factor.FY2024,0.0,PLACEHOLDER,"AEMO Distribution Loss Factors, FY2023-24. Pick the DLF class matching the site's connection."
+factors.yml,loss_factors.distribution_loss_factor.FY2025,0.0,PLACEHOLDER,"AEMO Distribution Loss Factors, FY2024-25."
+factors.yml,loss_factors.distribution_loss_factor.FY2026,0.0,PLACEHOLDER,"AEMO Distribution Loss Factors, FY2025-26."
+factors.yml,loss_factors.marginal_loss_factor.FY2024,0.0,PLACEHOLDER,"AEMO Marginal Loss Factors, FY2023-24. Pick the MLF for the site's transmission node."
+factors.yml,loss_factors.marginal_loss_factor.FY2025,0.0,PLACEHOLDER,"AEMO Marginal Loss Factors, FY2024-25."
+factors.yml,loss_factors.marginal_loss_factor.FY2026,0.0,PLACEHOLDER,"AEMO Marginal Loss Factors, FY2025-26."
+factors.yml,tax.gst_rate,0.1,SOURCED,A New Tax System (Goods and Services Tax) Act 1999 - GST is 10%.
+network_tariff.yml,power_factor,1.0,PLACEHOLDER,"Metered reactive energy (NMI suffix Q1), or the DNSP's assumed power factor from the tariff schedule."
+network_tariff.yml,charges.NUOS_FIXED.rate,0.0,PLACEHOLDER,DNSP Annual Pricing Proposal - fixed/standing charge for the chosen tariff code.
+network_tariff.yml,charges.NUOS_ENERGY_PEAK.rate,0.0,PLACEHOLDER,DNSP Annual Pricing Proposal - peak energy rate. Confirm the peak window matches the 'periods' block above.
+network_tariff.yml,charges.NUOS_ENERGY_SHOULDER.rate,0.0,PLACEHOLDER,DNSP Annual Pricing Proposal - shoulder energy rate.
+network_tariff.yml,charges.NUOS_ENERGY_OFFPEAK.rate,0.0,PLACEHOLDER,DNSP Annual Pricing Proposal - off-peak energy rate.
+network_tariff.yml,charges.NUOS_DEMAND.rate,0.0,PLACEHOLDER,"DNSP Annual Pricing Proposal - demand charge. Check kW vs kVA, the measurement window, and whether a ratchet applies."
+network_tariff.yml,charges.METERING.rate,0.0,PLACEHOLDER,"Metering coordinator's charge, or the DNSP's metering schedule."
+retail_contract.yml,charges.RETAIL_ENERGY.rate,8.0,CONTRACT_TERM,Invented contract term. A real deal would be struck against forward wholesale prices plus a retail margin.
+retail_contract.yml,charges.RETAIL_SERVICE.rate,500.0,CONTRACT_TERM,Invented contract term.
+retail_contract.yml,charges.LRET.percentage,0.0,PLACEHOLDER,Clean Energy Regulator - Renewable Power Percentage (RPP) for the calendar year.
+retail_contract.yml,charges.LRET.price,0.0,MARKET_ASSUMPTION,"No official LGC price exists. Spot/forward prices come from brokers and exchanges. Whatever you use is an assumption, not a published rate."
+retail_contract.yml,charges.SRES.percentage,0.0,PLACEHOLDER,Clean Energy Regulator - Small-scale Technology Percentage (STP) for the calendar year.
+retail_contract.yml,charges.SRES.price,0.0,PLACEHOLDER,"Clean Energy Regulator - STC clearing house price, and the rules on when it applies."
+retail_contract.yml,charges.AEMO_FEES.rate,0.0,PLACEHOLDER,"AEMO Budget and Fees / Fees and Charges schedule for the financial year, plus ancillary service recovery rates."
+retail_contract.yml,charges.STATE_SCHEME.rate,0.0,PLACEHOLDER,"State scheme administrator, e.g. NSW Energy Security Safeguard (ESS) or Victorian Energy Upgrades (VEU)."
 site.yml,cooling.base_fraction,0.15,ASSUMPTION,Invented. Sanity-check the resulting PUE against NABERS Energy for Data Centres.
 site.yml,cooling.temp_slope_per_degc,0.012,ASSUMPTION,Invented. Real sites derive this by regressing metered cooling load on ambient temperature.
 site.yml,climate.annual_mean_temp_c,18.0,ASSUMPTION,Invented. Replace with BOM Climate Data Online monthly means for your nearest station.

@@ -1,0 +1,56 @@
+# ---------------------------------------------------------------------------
+# LOSS FACTORS AND TAX
+#
+# Loss factors scale metered consumption up to the volume settled in the
+# wholesale market:
+#
+#     settled_volume = metered_kWh x DLF x MLF
+#
+# Both are published annually by AEMO and take effect on 1 JULY. The lookup in
+# src/tariff.py picks the latest entry whose effective_from is on or before the
+# billing month, so getting the financial-year boundary wrong is visible rather
+# than silent. One of the planted invoice errors in piece 4 is exactly this.
+#
+# See docs/DATA_SOURCES.md section 3.
+# ---------------------------------------------------------------------------
+
+loss_factors:
+  distribution_loss_factor:
+    - financial_year: "FY2024"
+      effective_from: "2023-07-01"
+      value: 0.0
+      status: PLACEHOLDER
+      source: "AEMO Distribution Loss Factors, FY2023-24. Pick the DLF class matching the site's connection."
+    - financial_year: "FY2025"
+      effective_from: "2024-07-01"
+      value: 0.0
+      status: PLACEHOLDER
+      source: "AEMO Distribution Loss Factors, FY2024-25."
+    - financial_year: "FY2026"
+      effective_from: "2025-07-01"
+      value: 0.0
+      status: PLACEHOLDER
+      source: "AEMO Distribution Loss Factors, FY2025-26."
+
+  marginal_loss_factor:
+    - financial_year: "FY2024"
+      effective_from: "2023-07-01"
+      value: 0.0
+      status: PLACEHOLDER
+      source: "AEMO Marginal Loss Factors, FY2023-24. Pick the MLF for the site's transmission node."
+    - financial_year: "FY2025"
+      effective_from: "2024-07-01"
+      value: 0.0
+      status: PLACEHOLDER
+      source: "AEMO Marginal Loss Factors, FY2024-25."
+    - financial_year: "FY2026"
+      effective_from: "2025-07-01"
+      value: 0.0
+      status: PLACEHOLDER
+      source: "AEMO Marginal Loss Factors, FY2025-26."
+
+tax:
+  gst_rate:
+    value: 0.10
+    status: SOURCED
+    source: "A New Tax System (Goods and Services Tax) Act 1999 - GST is 10%."

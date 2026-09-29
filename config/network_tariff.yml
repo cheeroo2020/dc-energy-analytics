@@ -1,0 +1,128 @@
+# ---------------------------------------------------------------------------
+# NETWORK TARIFF (distribution + transmission, "NUOS")
+#
+# EVERY RATE HERE IS 0.0 AND status: PLACEHOLDER.
+# Fill them from the DNSP's Annual Pricing Proposal / Tariff Schedule for the
+# financial year. See docs/DATA_SOURCES.md section 2.
+#
+# To run the pipeline before you have done that, use the illustrative variant:
+#     python -m src.billing --rates illustrative
+# which reads config/illustrative/ instead. Those numbers are fake on purpose.
+# ---------------------------------------------------------------------------
+
+tariff:
+  code: "PLACEHOLDER_TARIFF_CODE"       # e.g. the DNSP's HV or sub-transmission tariff code
+  dnsp: "PLACEHOLDER_DNSP"
+  financial_year: "PLACEHOLDER_FY"
+  description: "Large customer HV network tariff - rates not yet sourced"
+
+# ---------------------------------------------------------------------------
+# TIME-OF-USE PERIODS
+#
+# WARNING: the clock times, months and weekdays below are ILLUSTRATIVE
+# STRUCTURE, not published values. A zero cannot express a time window, so
+# these cannot ship as 0.0 placeholders. Confirm every one against the DNSP's
+# tariff schedule before trusting a bill.
+#
+# Rules are evaluated in order and the FIRST MATCH WINS, so put the narrowest
+# window first. Any filter left out is not applied, which is how the last rule
+# works as a catch-all. Periods are assigned using the interval START time.
+# weekday: Monday = 0 ... Sunday = 6
+# ---------------------------------------------------------------------------
+periods:
+  - name: "peak"
+    months: [11, 12, 1, 2, 3, 6, 7, 8]
+    weekdays: [0, 1, 2, 3, 4]
+    start_hour: 14
+    end_hour: 20
+  - name: "shoulder"
+    weekdays: [0, 1, 2, 3, 4]
+    start_hour: 7
+    end_hour: 22
+  - name: "offpeak"        # catch-all: no filters, matches everything left
+
+# How reactive power is handled. If the demand charge is billed on kVA you
+# either need metered reactive energy, or an assumed power factor.
+power_factor:
+  value: 1.0
+  status: PLACEHOLDER
+  source: "Metered reactive energy (NMI suffix Q1), or the DNSP's assumed power factor from the tariff schedule."
+
+# ---------------------------------------------------------------------------
+# CHARGES
+#
+# basis tells the engine how to calculate the quantity:
+#   fixed_daily    rate x days in the month
+#   fixed_monthly  rate x 1
+#   energy         rate (c/kWh) x metered kWh, optionally in one TOU period
+#   volume         rate ($/MWh) x settled MWh (metered x DLF x MLF)
+#   demand         rate x the month's peak, in kW or kVA, optionally within one
+#                  TOU window
+#   certificate    percentage x settled MWh x certificate price
+# ---------------------------------------------------------------------------
+charges:
+  - code: "NUOS_FIXED"
+    description: "Network standing charge"
+    category: "network"
+    basis: "fixed_daily"
+    rate_unit: "$/day"
+    rate:
+      value: 0.0
+      status: PLACEHOLDER
+      source: "DNSP Annual Pricing Proposal - fixed/standing charge for the chosen tariff code."
+
+  - code: "NUOS_ENERGY_PEAK"
+    description: "Network energy - peak"
+    category: "network"
+    basis: "energy"
+    period: "peak"
+    rate_unit: "c/kWh"
+    rate:
+      value: 0.0
+      status: PLACEHOLDER
+      source: "DNSP Annual Pricing Proposal - peak energy rate. Confirm the peak window matches the 'periods' block above."
+
+  - code: "NUOS_ENERGY_SHOULDER"
+    description: "Network energy - shoulder"
+    category: "network"
+    basis: "energy"
+    period: "shoulder"
+    rate_unit: "c/kWh"
+    rate:
+      value: 0.0
+      status: PLACEHOLDER
+      source: "DNSP Annual Pricing Proposal - shoulder energy rate."
+
+  - code: "NUOS_ENERGY_OFFPEAK"
+    description: "Network energy - off peak"
+    category: "network"
+    basis: "energy"
+    period: "offpeak"
+    rate_unit: "c/kWh"
+    rate:
+      value: 0.0
+      status: PLACEHOLDER
+      source: "DNSP Annual Pricing Proposal - off-peak energy rate."
+
+  - code: "NUOS_DEMAND"
+    description: "Network demand charge"
+    category: "network"
+    basis: "demand"
+    measure: "kva"           # "kva" or "kw" - read the tariff schedule, this matters
+    window: "peak"           # measure the peak only inside this TOU window; omit for all intervals
+    ratchet_months: 0        # 0 = no ratchet. Some tariffs hold a historic peak for 12 months.
+    rate_unit: "$/kVA/month"
+    rate:
+      value: 0.0
+      status: PLACEHOLDER
+      source: "DNSP Annual Pricing Proposal - demand charge. Check kW vs kVA, the measurement window, and whether a ratchet applies."
+
+  - code: "METERING"
+    description: "Metering service charge"
+    category: "metering"
+    basis: "fixed_daily"
+    rate_unit: "$/day"
+    rate:
+      value: 0.0
+      status: PLACEHOLDER
+      source: "Metering coordinator's charge, or the DNSP's metering schedule."

@@ -1,0 +1,44 @@
+# ---------------------------------------------------------------------------
+# ILLUSTRATIVE RATES - NOT REAL. INVENTED SO THE PIPELINE CAN RUN.
+#
+# This file holds NUMBERS ONLY. It is overlaid onto the real config files, so
+# there is only ever one copy of the tariff structure and the two cannot drift
+# apart.
+#
+# Every number is a deliberately ROUND one, so anyone reading an output can see
+# at a glance that no real rate is involved. A real network rate is never
+# exactly 8.0 c/kWh.
+#
+# Anything set here is stamped status: ILLUSTRATIVE_NOT_REAL, which flows
+# through to every line of every calculated bill.
+#
+# Paths address charges by their CODE, never by position.
+# ---------------------------------------------------------------------------
+
+network_tariff.yml:
+  power_factor: 0.95                     # lagging power factor, so kVA > kW
+  charges.NUOS_FIXED.rate: 50.0          # $/day
+  charges.NUOS_ENERGY_PEAK.rate: 8.0     # c/kWh
+  charges.NUOS_ENERGY_SHOULDER.rate: 4.0 # c/kWh
+  charges.NUOS_ENERGY_OFFPEAK.rate: 2.0  # c/kWh
+  charges.NUOS_DEMAND.rate: 15.0         # $/kVA/month
+  charges.METERING.rate: 5.0             # $/day
+
+retail_contract.yml:
+  charges.LRET.percentage: 0.20          # stands in for the CER's RPP
+  charges.LRET.price: 40.0               # $/LGC
+  charges.SRES.percentage: 0.25          # stands in for the CER's STP
+  charges.SRES.price: 40.0               # $/STC
+  charges.AEMO_FEES.rate: 0.80           # $/MWh
+  charges.STATE_SCHEME.rate: 2.00        # $/MWh
+
+factors.yml:
+  # Loss factors step on 1 July, so the FY2025 value applies from 2024-07-01.
+  # Deliberately different across years so a financial-year boundary error is
+  # detectable in piece 4.
+  loss_factors.distribution_loss_factor.FY2024: 1.050
+  loss_factors.distribution_loss_factor.FY2025: 1.060
+  loss_factors.distribution_loss_factor.FY2026: 1.040
+  loss_factors.marginal_loss_factor.FY2024: 1.000
+  loss_factors.marginal_loss_factor.FY2025: 0.990
+  loss_factors.marginal_loss_factor.FY2026: 0.980
