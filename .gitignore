@@ -2,3 +2,19 @@
 __pycache__/
 *.pyc
 .DS_Store
+
+# Generated per-interval detail. 35,088 rows, ~4 MB, and it regenerates
+# byte-identically from the fixed random seed in config/site.yml. Committing it
+# would add a 4 MB blob to history on every config change, so the repo holds
+# the code and config that produce it instead.
+outputs/interval_load.csv
+
+# Small aggregate outputs ARE committed, so the repo shows its results without
+# anyone having to run it: see the !negations below.
+outputs/*.csv
+!outputs/placeholder_register.csv
+!outputs/monthly_summary.csv
+!outputs/bill_lines.csv
+!outputs/invoice_checks.csv
+!outputs/forecast.csv
+!outputs/sustainability.csv
