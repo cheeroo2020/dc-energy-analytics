@@ -1,0 +1,6 @@
+file,setting,value,status,source
+site.yml,cooling.base_fraction,0.15,ASSUMPTION,Invented. Sanity-check the resulting PUE against NABERS Energy for Data Centres.
+site.yml,cooling.temp_slope_per_degc,0.012,ASSUMPTION,Invented. Real sites derive this by regressing metered cooling load on ambient temperature.
+site.yml,climate.annual_mean_temp_c,18.0,ASSUMPTION,Invented. Replace with BOM Climate Data Online monthly means for your nearest station.
+site.yml,climate.annual_amplitude_c,7.0,ASSUMPTION,Invented. See BOM Climate Data Online.
+site.yml,climate.daily_amplitude_c,5.0,ASSUMPTION,Invented. See BOM Climate Data Online.

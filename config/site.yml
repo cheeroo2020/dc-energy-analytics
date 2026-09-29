@@ -1,0 +1,110 @@
+# ---------------------------------------------------------------------------
+# SIMULATED SITE DEFINITION
+#
+# Nothing here describes a real facility, customer, NMI or meter. It is
+# invented input for a self-directed learning project.
+#
+# Numbers that would come from a published document are written like this:
+#
+#   some_number:
+#     value: 0.0
+#     status: PLACEHOLDER          <- must be replaced before the output means anything
+#     source: "which document, and which table in it"
+#
+# Numbers that are invented on purpose (the fake physics of the fake site) are:
+#
+#     status: ASSUMPTION           <- fine to invent, this is a simulation
+#
+# Run `python -m src.check_placeholders` to list everything still unfilled.
+# ---------------------------------------------------------------------------
+
+site:
+  name: "Simulated Data Centre A"
+  nmi: "SIMDC00001"            # deliberately not a valid NMI
+  nmi_suffix: "E1"             # E1 = consumption, the metered import channel
+  meter_serial: "SIMMTR0001"
+  state: "NSW"                 # drives which loss factor and emission factor you look up
+  network_provider: "PLACEHOLDER_DNSP"
+  connection_voltage: "HV"
+  interval_minutes: 30
+
+# The window of interval data to generate.
+period:
+  start: "2024-01-01"
+  end: "2025-12-31"
+
+# Each data hall energises on a date, then ramps to its full IT load.
+# This same schedule drives the forecast later, so a change here moves both
+# the "actuals" and the forward view.
+build_schedule:
+  - hall: "Hall 1"
+    energised: "2023-06-01"    # already at full load when the period starts
+    ramp_days: 180
+    full_it_load_kw: 1200
+  - hall: "Hall 2"
+    energised: "2024-07-01"
+    ramp_days: 120
+    full_it_load_kw: 1500
+  - hall: "Hall 3"
+    energised: "2025-04-01"
+    ramp_days: 150
+    full_it_load_kw: 1800
+  - hall: "Hall 4"
+    energised: "2026-02-01"    # beyond the actuals: only the forecast sees this
+    ramp_days: 150
+    full_it_load_kw: 1800
+
+it_load:
+  # Data centre IT load is close to flat. A small daily swing keeps it honest.
+  diurnal_swing_fraction: 0.04     # +/- 4% across the day
+  peak_hour: 15
+  random_noise_fraction: 0.01      # +/- 1% interval-to-interval jitter
+
+cooling:
+  # Cooling overhead expressed as a fraction of IT load:
+  #
+  #   overhead = base_fraction + temp_slope_per_degc * max(0, temp_c - reference_temp_c)
+  #
+  # So on a mild day cooling costs ~15% on top of IT load, and it climbs as the
+  # weather warms. This is the single biggest driver of a data centre's summer
+  # peak demand charge.
+  base_fraction:
+    value: 0.15
+    status: ASSUMPTION
+    source: "Invented. Sanity-check the resulting PUE against NABERS Energy for Data Centres."
+  temp_slope_per_degc:
+    value: 0.012
+    status: ASSUMPTION
+    source: "Invented. Real sites derive this by regressing metered cooling load on ambient temperature."
+    # Chosen so the summer cooling penalty is clearly larger than the random
+    # interval jitter. At 0.006 the seasonal signal was buried in the noise and
+    # January and March peaked within 0.3% of each other, which defeats the
+    # purpose of modelling a summer peak at all.
+  reference_temp_c: 18.0
+
+auxiliary:
+  fixed_kw: 60                     # lights, offices, security: flat all year
+  ups_loss_fraction: 0.03          # UPS and distribution losses inside the site
+
+climate:
+  # Weather as two sine waves: one over the year, one over the day.
+  # Crude, but it produces the summer-afternoon peak that drives the bill.
+  annual_mean_temp_c:
+    value: 18.0
+    status: ASSUMPTION
+    source: "Invented. Replace with BOM Climate Data Online monthly means for your nearest station."
+  annual_amplitude_c:
+    value: 7.0
+    status: ASSUMPTION
+    source: "Invented. See BOM Climate Data Online."
+  daily_amplitude_c:
+    value: 5.0
+    status: ASSUMPTION
+    source: "Invented. See BOM Climate Data Online."
+  hottest_day_of_year: 20          # ~20 January, southern hemisphere
+  hottest_hour: 15
+  random_noise_c: 1.5
+
+# Fixing the seed means the same "actuals" are produced every run, so a change
+# in a bill is always a change in the pricing logic, never in the weather.
+random_seed: 7
